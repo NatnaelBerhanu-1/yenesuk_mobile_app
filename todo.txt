@@ -1,0 +1,6 @@
+- Search bar on homepage -- done
+- Categories on homepage -- done
+- Post ad btn on homepage -- done
+- Filter ui -- done
+- Product description
+- Post ad
