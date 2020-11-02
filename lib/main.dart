@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yenesuk/screens/homepage/homepage.dart';
+import 'package:yenesuk/screens/loginpage/loginpage.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Abay',
       theme: ThemeData(
+        fontFamily: 'Roboto',
         primaryColor: Color(0xff2e6591),
         accentColor: Color(0xFFb33225),
         accentTextTheme: TextTheme(
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.normal)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }

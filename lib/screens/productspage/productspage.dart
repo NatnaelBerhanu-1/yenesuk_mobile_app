@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yenesuk/screens/productspage/widgets/product.dart';
+import 'package:yenesuk/screens/searchpage/searchpage.dart';
+import 'package:yenesuk/widgets/loadingshimmer.dart';
 
 class ProductsPage extends StatefulWidget {
   int active_index = 0;
@@ -54,20 +56,25 @@ class _ProductsPageState extends State<ProductsPage> {
                   onPressed: () => {Navigator.pop(context)},
                 ),
                 Flexible(
-                  child: Container(
-                    height: 50.0,
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Search')
-                      ],
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage()));
+                    },
+                    child: Container(
+                      height: 50.0,
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text('Search')
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -112,13 +119,16 @@ class _ProductsPageState extends State<ProductsPage> {
                   childAspectRatio: 130 / 136,
                   scrollDirection: Axis.vertical,
                   children: [
-                    ProductWidget(),
-                    ProductWidget(),
-                    ProductWidget(),
-                    ProductWidget(),
-                    ProductWidget(),
-                    ProductWidget(),
-                    ProductWidget(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
+                    LoadingShimmer(),
                   ],
                 ),
               ],

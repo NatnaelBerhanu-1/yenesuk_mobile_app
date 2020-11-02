@@ -2,5 +2,7 @@
 - Categories on homepage -- done
 - Post ad btn on homepage -- done
 - Filter ui -- done
-- Product description
-- Post ad
+- Product description -- done
+- Post ad -- done
+  - add on click for item removal
+  - add image to list after add

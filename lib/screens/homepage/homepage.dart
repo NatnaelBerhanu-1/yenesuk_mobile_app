@@ -4,11 +4,38 @@ import 'package:yenesuk/screens/homepage/widgets/category.dart';
 import 'package:yenesuk/screens/homepage/widgets/draweritemwidget.dart';
 import 'package:yenesuk/screens/postad/postadpage.dart';
 import 'package:yenesuk/screens/productspage/productspage.dart';
-import 'package:yenesuk/widgets/product.dart';
+import 'package:yenesuk/screens/searchpage/searchpage.dart';
+import 'package:yenesuk/widgets/featuredproduct.dart';
+import 'package:yenesuk/widgets/loadingshimmer.dart';
 import 'package:yenesuk/widgets/title.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  ScrollController _scrollController = new ScrollController();
+
+  void scrollFeaturedProducts(){
+    print('${_scrollController.position.pixels} | ${_scrollController.position.minScrollExtent}');
+    if (_scrollController.position.pixels == _scrollController.position.minScrollExtent){
+      _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(seconds: 5), curve: Curves.linear).then((value) => scrollFeaturedProducts());
+    }else{
+      _scrollController.animateTo(_scrollController.position.minScrollExtent, duration: Duration(seconds: 5), curve: Curves.linear);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+    .addPostFrameCallback((_) {
+      scrollFeaturedProducts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -24,43 +51,51 @@ class HomePage extends StatelessWidget {
               height: MediaQuery.of(context).padding.top,
               color: Theme.of(context).primaryColor,
             ),
-            Container(
-              height: 64.0,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.dehaze,
-                      color: Colors.white,
-                      size: 28.0,
-                    ),
-                    onPressed: () => {
-                      if (!_drawerKey.currentState.isDrawerOpen)
-                        {_drawerKey.currentState.openDrawer()}
-                    },
-                  ),
-                  Expanded(
-                      child: Container(
-                    height: 50,
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    decoration: BoxDecoration(
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SearchPage()));
+              },
+              child: Container(
+                height: 64.0,
+                decoration:
+                    BoxDecoration(color: Theme.of(context).primaryColor),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.dehaze,
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    margin: EdgeInsets.only(right: 10.0, top: 5.0, bottom: 5.0),
-                    // color: Colors.white,
-                    child: Row(
-                      children: [
-                        Icon(Icons.search),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text('Search')
-                      ],
+                        size: 28.0,
+                      ),
+                      onPressed: () => {
+                        if (!_drawerKey.currentState.isDrawerOpen)
+                          {_drawerKey.currentState.openDrawer()}
+                      },
                     ),
-                  ))
-                ],
+                    Expanded(
+                        child: Container(
+                      height: 50,
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      margin:
+                          EdgeInsets.only(right: 10.0, top: 5.0, bottom: 5.0),
+                      // color: Colors.white,
+                      child: Row(
+                        children: [
+                          Icon(Icons.search),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text('Search')
+                        ],
+                      ),
+                    ))
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -68,15 +103,18 @@ class HomePage extends StatelessWidget {
             ),
             Container(
               height: 175,
-              child:
-                  ListView(scrollDirection: Axis.horizontal, children: <Widget>[
-                FeaturedProductWidget(),
-                FeaturedProductWidget(),
-                FeaturedProductWidget(),
-                FeaturedProductWidget(),
-                FeaturedProductWidget(),
-                FeaturedProductWidget(),
-              ]),
+              child: GestureDetector(
+                child: ListView(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          LoadingShimmer(),
+                          LoadingShimmer(),
+                          LoadingShimmer(),
+                          LoadingShimmer(),
+                          LoadingShimmer(),
+                        ]),
+              ),
             ),
             SizedBox(
               height: 5.0,
@@ -152,21 +190,20 @@ class HomePage extends StatelessWidget {
             height: 200.0,
             padding: EdgeInsets.zero,
             color: Theme.of(context).primaryColor,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
+            child: Stack(fit: StackFit.expand, children: [
               Image.asset(
                 'assets/images/renaissancedam.jpg',
                 fit: BoxFit.fill,
               ),
               Container(
                 height: 200.0,
-                color: Colors.black.withOpacity(0.5),
+                color: Theme.of(context).primaryColor.withOpacity(0.8),
               ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -192,7 +229,7 @@ class HomePage extends StatelessWidget {
             ]),
           ),
           DrawerItemWidget(title: 'My ads', goto: ProductsPage()),
-          DrawerItemWidget(title: 'Post ad', goto: ProductsPage()),
+          DrawerItemWidget(title: 'Post ad', goto: PostadPage()),
           DrawerItemWidget(title: 'Profile', goto: ProductsPage()),
           DrawerItemWidget(title: 'About', goto: ProductsPage()),
         ],
