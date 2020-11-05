@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yenesuk/blocs/productsbloc/productbloc.dart';
+import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
 import 'package:yenesuk/screens/homepage/homepage.dart';
 import 'package:yenesuk/screens/loginpage/loginpage.dart';
 
 void main() {
-  runApp(MyApp());
+  final ProductRepository productRepository = ProductRepository();
+  runApp(MyApp(productRepository: productRepository));
 }
 
 class MyApp extends StatelessWidget {
+  final ProductRepository productRepository;
+  MyApp({Key key, @required this.productRepository}):assert(productRepository!=null), super(key: key);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.normal)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }

@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yenesuk/blocs/productsbloc/productbloc.dart';
+import 'package:yenesuk/blocs/productsbloc/productevent.dart';
+import 'package:yenesuk/blocs/productsbloc/productstate.dart';
+import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
+import 'package:yenesuk/models/Item.dart';
 import 'package:yenesuk/screens/productspage/widgets/product.dart';
 import 'package:yenesuk/screens/searchpage/searchpage.dart';
 import 'package:yenesuk/widgets/loadingshimmer.dart';
@@ -26,116 +32,158 @@ class ProductsPage extends StatefulWidget {
 class _ProductsPageState extends State<ProductsPage> {
   int _activeCategory;
   RangeValues _currentRangeValues = new RangeValues(0, 50000000);
+  ProductRepository _productRepository;
 
   _ProductsPageState(int activeCat) {
     _activeCategory = activeCat;
   }
 
   @override
+  void initState() {
+    _productRepository = ProductRepository();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            height: MediaQuery.of(context).padding.top,
-            color: Theme.of(context).primaryColor,
-          ),
-          Container(
-            height: 64.0,
-            decoration: BoxDecoration(
+    return BlocProvider(
+      create: (context) => ProductBloc(productRepository: _productRepository)..add(GetProductsEvent(page: 0)),
+      child: Scaffold(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              height: MediaQuery.of(context).padding.top,
               color: Theme.of(context).primaryColor,
             ),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
+            Container(
+              height: 64.0,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => {Navigator.pop(context)},
                   ),
-                  onPressed: () => {Navigator.pop(context)},
-                ),
-                Flexible(
-                  child: GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage()));
-                    },
-                    child: Container(
-                      height: 50.0,
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                      child: Row(
-                        children: [
-                          Icon(Icons.search),
-                          SizedBox(
-                            width: 5.0,
-                          ),
-                          Text('Search')
-                        ],
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage()));
+                      },
+                      child: Container(
+                        height: 50.0,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                        child: Row(
+                          children: [
+                            Icon(Icons.search),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Text('Search')
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: Colors.white,
-                  ),
-                  onPressed: () => {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) => _buildFilterBottomModal(),
-                        backgroundColor: Color(0x00FF0000),
-                        clipBehavior: Clip.none,
-                        isScrollControlled: true)
-                  },
-                )
-              ],
+                  IconButton(
+                    icon: Icon(
+                      Icons.filter_list,
+                      color: Colors.white,
+                    ),
+                    onPressed: () => {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) => _buildFilterBottomModal(),
+                          backgroundColor: Color(0x00FF0000),
+                          clipBehavior: Clip.none,
+                          isScrollControlled: true)
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-          Container(
-              height: 40.0,
-              color: Theme.of(context).primaryColor,
-              child: ListView.builder(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.categories.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                        padding: EdgeInsets.only(right: 10.0),
-                        child: _buildCategory(index));
-                  })),
-          Expanded(
-            child: Stack(
-              children: [
-                GridView.count(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  mainAxisSpacing: 15.0,
-                  crossAxisCount: 2,
-                  childAspectRatio: 130 / 136,
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                    LoadingShimmer(),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+            Container(
+                height: 40.0,
+                color: Theme.of(context).primaryColor,
+                child: ListView.builder(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.categories.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: _buildCategory(index));
+                    })),
+            Expanded(
+              child: BlocBuilder<ProductBloc, ProductState>(
+                builder: (context, state){
+                  if(state is ProductFetchingState){
+                    return _buildLoadingWidget();
+                  }
+                  if(state is ProductFetchedState){
+                    return _buildProductsWidget(state.items);
+                  }
+                  if(state is ProductErrorState){
+                    return Text('Failed to get ads\nTap to retry');
+                  }
+                  return Container();
+                },
+              ),
+            )
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildProductsWidget(List<Item> items) {
+    return GridView.count(
+      padding:
+      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      mainAxisSpacing: 15.0,
+      crossAxisCount: 2,
+      childAspectRatio: 130 / 136,
+      scrollDirection: Axis.vertical,
+      children: items.map((e) =>
+        ProductWidget(
+          name: e.name,
+          image: e.images[0].imageUrl,
+          price: e.price,
+        )
+      ).toList()
+    );
+  }
+
+  Widget _buildLoadingWidget(){
+    return GridView.count(
+      padding:
+      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      mainAxisSpacing: 15.0,
+      crossAxisCount: 2,
+      childAspectRatio: 130 / 136,
+      scrollDirection: Axis.vertical,
+      children:
+      [
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+        LoadingShimmer(),
+      ],
     );
   }
 
@@ -350,4 +398,6 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
               ));
   }
+
+
 }
