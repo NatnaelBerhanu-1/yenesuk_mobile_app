@@ -29,15 +29,6 @@ class GetSingleProductEvent extends ProductEvent{
   List<Object> get props => [id];
 }
 
-class LoadMoreProductsEvent extends ProductEvent{
-  final int page;
-  final String categoryId;
-  LoadMoreProductsEvent({@required this.page, @required this.categoryId}):assert(page!=null);
-
-  @override
-  List<Object> get props => [page];
-}
-
 class SearchTextChangedEvent extends ProductEvent{
   final String searchText;
   final int page;

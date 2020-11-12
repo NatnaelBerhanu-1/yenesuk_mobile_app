@@ -43,7 +43,6 @@ class _ProductsPageState extends State<ProductsPage>
   int _page = 0;
   int _lastPage = 0;
   List<Item> _items = List<Item>();
-  bool loadError = false;
   var _productScrollController = new ScrollController();
 
   @override
@@ -61,7 +60,7 @@ class _ProductsPageState extends State<ProductsPage>
       if(_productScrollController.position.atEdge) {
         if(_productScrollController.position.pixels != 0){
           if(_page < _lastPage){
-            BlocProvider.of<ProductBloc>(context).add(LoadMoreProductsEvent(page: _page+1, categoryId: widget.categoryId));
+            BlocProvider.of<ProductBloc>(context).add(GetProductsByCategoryEvent(page: _page+1, categoryId: widget.categoryId));
           }
         }
       }
@@ -234,7 +233,7 @@ class _ProductsPageState extends State<ProductsPage>
                   if(status == Status.error){
                     return GestureDetector(
                       onTap: (){
-                        BlocProvider.of<ProductBloc>(context).add(LoadMoreProductsEvent(page: _page+1, categoryId: widget.categoryId));
+                        BlocProvider.of<ProductBloc>(context).add(GetProductsByCategoryEvent(page: _page+1, categoryId: widget.categoryId));
                       },
                       child: Center(
                           child: Padding(

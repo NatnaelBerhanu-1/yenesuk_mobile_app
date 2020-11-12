@@ -20,7 +20,7 @@ class SearchItem extends StatelessWidget{
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(bottom: 8.0),
+        padding: EdgeInsets.only(bottom: 8.0, top: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

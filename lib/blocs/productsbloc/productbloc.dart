@@ -16,11 +16,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     GetItemsResponse data;
     try {
       yield ProductFetchingState();
-      if (event is LoadMoreProductsEvent) {
-        print('loading more data');
-        data = await productRepository.getItemsByCategory(
-            event.categoryId, event.page);
-      }
       if (event is GetProductsEvent) {
         data = await productRepository.getItems(event.page);
       } else if (event is SearchTextChangedEvent) {
