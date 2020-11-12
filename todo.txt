@@ -4,5 +4,7 @@
 - Filter ui -- done
 - Product description -- done
 - Post ad -- done
-  - add on click for item removal
-  - add image to list after add
+  - add on click for item removal*
+  - add image to list after add*
+
+- decrease fade in time in products page and prod desc page

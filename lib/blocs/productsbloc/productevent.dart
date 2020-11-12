@@ -12,11 +12,37 @@ class GetProductsEvent extends ProductEvent{
   List<Object> get props => [page];
 }
 
-class SearchTextChangedEvent extends ProductEvent{
-  final String searchText;
-  SearchTextChangedEvent({@required this.searchText}) : assert(searchText!=null);
+class GetProductsByCategoryEvent extends ProductEvent{
+  final String categoryId;
+  final int page;
+  GetProductsByCategoryEvent({@required this.categoryId, @required this.page});
 
   @override
-  // TODO: implement props
+  List<Object> get props => [categoryId];
+}
+
+class GetSingleProductEvent extends ProductEvent{
+  final String id;
+  GetSingleProductEvent({@required this.id}):assert(id!=null);
+
+  @override
+  List<Object> get props => [id];
+}
+
+class LoadMoreProductsEvent extends ProductEvent{
+  final int page;
+  final String categoryId;
+  LoadMoreProductsEvent({@required this.page, @required this.categoryId}):assert(page!=null);
+
+  @override
+  List<Object> get props => [page];
+}
+
+class SearchTextChangedEvent extends ProductEvent{
+  final String searchText;
+  final int page;
+  SearchTextChangedEvent({@required this.searchText, @required this.page}) : assert(searchText!=null&&page!=null);
+
+  @override
   List<Object> get props => [searchText];
 }

@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yenesuk/blocs/initbloc/initbloc.dart';
+import 'package:yenesuk/blocs/initbloc/initevent.dart';
+import 'package:yenesuk/blocs/initbloc/repo/initrepo.dart';
 import 'package:yenesuk/blocs/productsbloc/productbloc.dart';
+import 'package:yenesuk/blocs/productsbloc/productdetailbloc.dart';
 import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
-import 'package:yenesuk/screens/homepage/homepage.dart';
-import 'package:yenesuk/screens/loginpage/loginpage.dart';
+import 'package:yenesuk/screens/splashscreen/splashpage.dart';
 
 void main() {
   final ProductRepository productRepository = ProductRepository();
-  runApp(MyApp(productRepository: productRepository));
+  final InitRepository initRepository = InitRepository();
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) => ProductBloc(productRepository: productRepository)
+        ),
+        BlocProvider(
+            create: (BuildContext context) => ProductDetailsBloc(productRepository: productRepository)
+        ),
+        BlocProvider(
+            create: (BuildContext context) => InitBloc(initRepo: initRepository)..add(GetInit())
+        ),
+      ],
+      child: MyApp(),
+    )
+    );
 }
 
 class MyApp extends StatelessWidget {
-  final ProductRepository productRepository;
-  MyApp({Key key, @required this.productRepository}):assert(productRepository!=null), super(key: key);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -39,7 +56,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.normal)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: SplashPage(),
     );
   }
 }

@@ -4,56 +4,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yenesuk/blocs/productsbloc/productdetailbloc.dart';
 import 'package:yenesuk/blocs/productsbloc/productevent.dart';
+import 'package:yenesuk/models/Item.dart';
 import 'package:yenesuk/screens/productdetail/productdetailspage.dart';
 
-class ProductWidget extends StatelessWidget {
-  final String image, name, id;
-  final double price;
-
-  ProductWidget(
-      {@required this.id, @required this.image, @required this.name, @required this.price})
-      : assert(image != null && name != null && price != null && id != null);
+class SearchItem extends StatelessWidget{
+  final Item item;
+  SearchItem({@required this.item}):assert(item!=null);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        BlocProvider.of<ProductDetailsBloc>(context).add(GetSingleProductEvent(id: id));
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage(id: id,)));
+      onTap: (){
+        BlocProvider.of<ProductDetailsBloc>(context).add(GetSingleProductEvent(id: item.id));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProductDetailsPage(id: item.id)));
       },
       child: Container(
-        decoration: BoxDecoration(
-            // border: Border.all(color: Theme.of(context).primaryColor),
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        width: 130.0,
-        child: Column(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(bottom: 8.0),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             ClipRRect(
               // borderRadius: BorderRadius.only(
               //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
               child: CachedNetworkImage(
-                imageUrl: '$image',
+                imageUrl: '${item.images[0].imageUrl}',
                 placeholder: (context, url) => Container(
                   color: Colors.grey[300],
-                  height: 100.0,
+                  height: 80.0,
                 ),
-                height: 100.0,
-                // width: 130.0,
+                height: 80.0,
+                width: 120.0,
                 fit: BoxFit.fill,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 5.0),
-              child: Column(
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     Text(
-                      '$name',
+                      '${item.name}',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 16.0,
@@ -65,14 +60,16 @@ class ProductWidget extends StatelessWidget {
                       height: 2.0,
                     ),
                     Text(
-                      'ETB $price',
+                      'ETB ${item.price}',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor.withOpacity(.9),
                           fontSize: 16.0),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     )
-                  ]),
+                  ],
+                ),
+              ),
             )
           ],
         ),

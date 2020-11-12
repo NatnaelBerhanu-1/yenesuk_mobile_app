@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,8 @@ class _ProductCarouselState extends State<ProductCarousel> {
 
   @override
   void initState() {
-    _activeIndex = widget.items.length ~/2;
+    _activeIndex = 0;
+    print('items: ${widget.items}');
     super.initState();
   }
 
@@ -26,10 +28,10 @@ class _ProductCarouselState extends State<ProductCarousel> {
         CarouselSlider(
           options: CarouselOptions(
             height: 250.0,
-            viewportFraction: 0.8,
+            viewportFraction: 0.95,
             enlargeCenterPage: true,
             enableInfiniteScroll: false,
-            initialPage: widget.items.length~/2,
+            initialPage: 0,
             onPageChanged: (position, reason){
               print('carousel position: $position');
               setState(() {
@@ -48,9 +50,12 @@ class _ProductCarouselState extends State<ProductCarousel> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: Image.asset(
-                '$e',
-                fit: BoxFit.fill,
+              child: CachedNetworkImage(
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[300],
+                ),
+                imageUrl:'$e',
+                fit: BoxFit.contain,
               ),
             ),
           )).toList(),

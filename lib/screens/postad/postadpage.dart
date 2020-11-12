@@ -1,17 +1,14 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:yenesuk/screens/postad/widgets/itemimage.dart';
 
-class PostadPage extends StatefulWidget {
+class PostAdPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _PostadState();
+  State<StatefulWidget> createState() => _PostAdState();
 }
 
-class _PostadState extends State<PostadPage> {
+class _PostAdState extends State<PostAdPage> {
   List<Asset> _images = List<Asset>();
   // List<String> images = ['assets/images/iphone.jpg'];
   @override
@@ -254,7 +251,6 @@ class _PostadState extends State<PostadPage> {
                             ),
                             itemCount: _images.length + 1,
                             itemBuilder: (context, i) {
-                              print('${_images.length} ${i + 1}');
                               if (i == _images.length && _images.length < 5) {
                                 return ItemImage(
                                   icon: Icons.add_circle,

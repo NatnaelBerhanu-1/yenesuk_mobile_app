@@ -3,31 +3,40 @@ import 'package:yenesuk/blocs/productsbloc/productevent.dart';
 import 'package:yenesuk/blocs/productsbloc/productstate.dart';
 import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
 import 'package:yenesuk/models/Item.dart';
+import 'package:yenesuk/models/responses/getitemsresponse.dart';
 
-class ProductBloc extends Bloc<ProductEvent, ProductState>{
-
+class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductRepository productRepository;
-  ProductBloc({this.productRepository}):assert(productRepository!=null), super(ProductFetchingState());
+  ProductBloc({this.productRepository})
+      : assert(productRepository != null),
+        super(ProductFetchingState());
 
   @override
-  Stream<ProductState> mapEventToState(ProductEvent event) async*{
-    yield ProductFetchingState();
-    List<Item> items;
-    try{
-      if(event is GetProductsEvent){
-        items = await productRepository.getItems(event.page);
-      }else if(event is SearchTextChangedEvent){
-        items = await productRepository.searchItems(event.searchText);
+  Stream<ProductState> mapEventToState(ProductEvent event) async* {
+    GetItemsResponse data;
+    try {
+      yield ProductFetchingState();
+      if (event is LoadMoreProductsEvent) {
+        print('loading more data');
+        data = await productRepository.getItemsByCategory(
+            event.categoryId, event.page);
       }
-      if(items.length == 0){
+      if (event is GetProductsEvent) {
+        data = await productRepository.getItems(event.page);
+      } else if (event is SearchTextChangedEvent) {
+        data = await productRepository.searchItems(searchKey: event.searchText);
+      } else if (event is GetProductsByCategoryEvent) {
+        data = await productRepository.getItemsByCategory(
+            event.categoryId, event.page);
+      }
+      if (data.items.length == 0) {
         yield ProductEmptyState();
-      }else{
-        yield ProductFetchedState(items: items);
+      } else {
+        yield ProductFetchedState(data: data);
       }
-    }catch(e){
+    } catch (e) {
       print(e);
       yield ProductErrorState();
     }
   }
-
 }

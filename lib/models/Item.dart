@@ -1,4 +1,7 @@
 import 'package:yenesuk/models/Image.dart';
+import 'package:yenesuk/models/category.dart';
+import 'package:yenesuk/models/city.dart';
+import 'package:yenesuk/models/user.dart';
 
 class Item{
   String id;
@@ -11,14 +14,19 @@ class Item{
   String cityId;
   DateTime createdAt;
   List<Image> images;
+  Category category;
+  User user;
+  City city;
+
 
   Item({this.id, this.name, this.description, this.condition, this.price,
-      this.categoryId, this.userId, this.cityId, this.createdAt, this.images});
+      this.categoryId, this.userId, this.cityId, this.createdAt, this.images, this.category, this.user, this.city});
 
   factory Item.fromJson(Map<String, dynamic> json){
     List<Image> _images = new List<Image>();
     print(json['Images']);
     List<dynamic> rawImgs = json['Images'];
+    if (rawImgs != null)
     rawImgs.forEach((image){
       _images.add(Image.fromJson(image));
     });
@@ -36,5 +44,13 @@ class Item{
       createdAt: DateTime.parse(json['createdAt']),
       images: _images
     );
+  }
+
+  factory Item.fromJsonAll(Map<String, dynamic> json){
+    Item item = Item.fromJson(json);
+    item.city = City.fromJson(json['City']);
+    item.user = User.fromJson(json['User']);
+    item.category = Category.fromJson(json['Category']);
+    return item;
   }
 }

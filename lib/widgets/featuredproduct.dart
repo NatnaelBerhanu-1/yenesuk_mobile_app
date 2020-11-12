@@ -1,13 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yenesuk/screens/productdetail/productdetails.dart';
+import 'package:yenesuk/screens/productdetail/productdetailspage.dart';
 
 class FeaturedProductWidget extends StatelessWidget {
+  final String image, name, id;
+  final double price;
+
+  FeaturedProductWidget(
+      {@required this.id, @required this.image, @required this.name, @required this.price})
+      : assert(image != null && name != null && price != null && id != null);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsPage(id: id,)));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -25,12 +32,16 @@ class FeaturedProductWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(
                   Radius.circular(5.0)
                 ),
-                child: Image(
-                  image: AssetImage('assets/images/iphone.jpg'),
+                child: CachedNetworkImage(
+                  imageUrl: '$image',
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    height: 100.0,
+                  ),
                   height: 100.0,
                   // width: 130.0,
                   fit: BoxFit.fill,
-                ),
+                )
               ),
               Padding(
                 padding: EdgeInsets.all(5.0),
@@ -38,7 +49,7 @@ class FeaturedProductWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Apple iPhone 11 Pro max, 256GB, Midnight',
+                        '$name',
                         style: TextStyle(color: Colors.black, fontSize: 14.0),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
@@ -47,7 +58,7 @@ class FeaturedProductWidget extends StatelessWidget {
                         height: 10.0,
                       ),
                       Text(
-                        'Br 45000',
+                        'ETB $price',
                         style: TextStyle(
                             color: Theme.of(context).primaryColor.withOpacity(.9),
                             fontWeight: FontWeight.w800,

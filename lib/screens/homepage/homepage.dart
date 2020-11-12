@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yenesuk/blocs/initbloc/initbloc.dart';
+import 'package:yenesuk/blocs/initbloc/initstate.dart';
+import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
+import 'package:yenesuk/blocs/searchbloc/searchbloc.dart';
 import 'package:yenesuk/screens/homepage/widgets/category.dart';
 import 'package:yenesuk/screens/homepage/widgets/draweritemwidget.dart';
 import 'package:yenesuk/screens/postad/postadpage.dart';
-import 'package:yenesuk/screens/productspage/productspage.dart';
 import 'package:yenesuk/screens/searchpage/searchpage.dart';
 import 'package:yenesuk/widgets/featuredproduct.dart';
 import 'package:yenesuk/widgets/loadingshimmer.dart';
@@ -18,20 +22,26 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  void scrollFeaturedProducts(){
-    print('${_scrollController.position.pixels} | ${_scrollController.position.minScrollExtent}');
-    if (_scrollController.position.pixels == _scrollController.position.minScrollExtent){
-      _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(seconds: 5), curve: Curves.linear).then((value) => scrollFeaturedProducts());
-    }else{
-      _scrollController.animateTo(_scrollController.position.minScrollExtent, duration: Duration(seconds: 5), curve: Curves.linear);
+  void scrollFeaturedProducts() {
+    if (_scrollController.hasClients) {
+      // print('${_scrollController.position.pixels} | ${_scrollController.position.minScrollExtent}');
+      if (_scrollController.position.pixels ==
+          _scrollController.position.minScrollExtent) {
+        _scrollController
+            .animateTo(_scrollController.position.maxScrollExtent,
+                duration: Duration(seconds: 5), curve: Curves.linear)
+            .then((value) => scrollFeaturedProducts());
+      } else {
+        _scrollController.animateTo(_scrollController.position.minScrollExtent,
+            duration: Duration(seconds: 5), curve: Curves.linear);
+      }
     }
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-    .addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollFeaturedProducts();
     });
   }
@@ -53,8 +63,8 @@ class _HomePageState extends State<HomePage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SearchPage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => BlocProvider(create: (context) => SearchBloc(productRepository: ProductRepository()), child: SearchPage())));
               },
               child: Container(
                 height: 64.0,
@@ -101,21 +111,44 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 10.0,
             ),
-            Container(
-              height: 175,
-              child: GestureDetector(
-                child: ListView(
+            BlocBuilder<InitBloc, InitState>(builder: (context, state) {
+              if (state is FetchedState) {
+                if (state.initData.featuredAds.length == 0) {
+                  return Container();
+                }
+                return Container(
+                  height: 175,
+                  child: GestureDetector(
+                    child: ListView(
                         controller: _scrollController,
                         scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          LoadingShimmer(),
-                          LoadingShimmer(),
-                          LoadingShimmer(),
-                          LoadingShimmer(),
-                          LoadingShimmer(),
-                        ]),
-              ),
-            ),
+                        children: state.initData.featuredAds
+                            .map((e) => FeaturedProductWidget(
+                                  id: e.id,
+                                  name: e.name,
+                                  price: e.price,
+                                  image: e.images[0].imageUrl,
+                                ))
+                            .toList()),
+                  ),
+                );
+              }
+              return Container(
+                height: 175,
+                child: GestureDetector(
+                  child: ListView(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        LoadingShimmer(),
+                        LoadingShimmer(),
+                        LoadingShimmer(),
+                        LoadingShimmer(),
+                        LoadingShimmer(),
+                      ]),
+                ),
+              );
+            }),
             SizedBox(
               height: 5.0,
             ),
@@ -127,54 +160,76 @@ class _HomePageState extends State<HomePage> {
                   overScroll.disallowGlow();
                   return true;
                 },
-                child: GridView.count(
-                  padding: EdgeInsets.all(0.0),
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  children: [
-                    Category(
-                      title: 'Electronics',
-                    ),
-                    Category(
-                      title: 'Clothes',
-                    ),
-                    Category(
-                      title: 'Shoes',
-                    ),
-                    Category(
-                      title: 'Beauty',
-                    ),
-                    Category(
-                      title: 'Furniture',
-                    ),
-                    Category(
-                      title: 'Other',
-                    ),
-                  ],
-                ),
+                child:
+                    BlocBuilder<InitBloc, InitState>(builder: (context, state) {
+                  if (state is FetchedState) {
+                    return GridView.builder(
+                        padding: EdgeInsets.all(0.0),
+                        shrinkWrap: true,
+                        itemCount: state.initData.categories.length + 1,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                        ),
+                        itemBuilder: (context, index) {
+                          if (index == state.initData.categories.length) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PostAdPage()));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                child: Center(
+                                    child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.add,
+                                        color: Colors.white, size: 40.0),
+                                    Text('Post ad',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold))
+                                  ],
+                                )),
+                              ),
+                            );
+                          }
+                          return Category(
+                              title: '${state.initData.categories[index].name}',
+                              imageUrl:
+                                  '${state.initData.categories[index].imageUrl}',
+                              id: '${state.initData.categories[index].id}');
+                        });
+                  }
+                  return Container();
+                }),
               ),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-              height: 50.0,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              child: FlatButton(
-                onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PostadPage()))
-                },
-                child: Text(
-                  'post ad',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            )
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+            //   height: 50.0,
+            //   width: MediaQuery.of(context).size.width,
+            //   decoration: BoxDecoration(
+            //       color: Theme.of(context).primaryColor,
+            //       borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            //   child: FlatButton(
+            //     onPressed: () {
+            //
+            //     },
+            //     child: Text(
+            //       'post ad',
+            //       style: TextStyle(
+            //           color: Colors.white, fontWeight: FontWeight.bold),
+            //     ),
+            //   ),
+            // )
           ]),
         ),
       ),
@@ -228,10 +283,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ]),
           ),
-          DrawerItemWidget(title: 'My ads', goto: ProductsPage()),
-          DrawerItemWidget(title: 'Post ad', goto: PostadPage()),
-          DrawerItemWidget(title: 'Profile', goto: ProductsPage()),
-          DrawerItemWidget(title: 'About', goto: ProductsPage()),
+          DrawerItemWidget(title: 'My ads', goto: PostAdPage()),
+          DrawerItemWidget(title: 'Post ad', goto: PostAdPage()),
+          DrawerItemWidget(title: 'Profile', goto: PostAdPage()),
+          DrawerItemWidget(title: 'About', goto: PostAdPage()),
         ],
       ),
     );
