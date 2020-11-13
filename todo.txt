@@ -1,10 +1,1 @@
-- Search bar on homepage -- done
-- Categories on homepage -- done
-- Post ad btn on homepage -- done
-- Filter ui -- done
-- Product description -- done
-- Post ad -- done
-  - add on click for item removal*
-  - add image to list after add*
-
-- decrease fade in time in products page and prod desc page
+- change all screens to stateles use bloc to handle states

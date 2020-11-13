@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:yenesuk/models/requests/createAdRequest.dart';
 
 abstract class ProductEvent extends Equatable{}
 

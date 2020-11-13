@@ -32,19 +32,21 @@ class ProductWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ClipRRect(
-              // borderRadius: BorderRadius.only(
-              //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              child: CachedNetworkImage(
-                imageUrl: '$image',
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
+            Center(
+              child: ClipRRect(
+                // borderRadius: BorderRadius.only(
+                //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: CachedNetworkImage(
+                  imageUrl: '$image',
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    height: 100.0,
+                  ),
                   height: 100.0,
+                  // width: 130.0,
+                  fit: BoxFit.fill,
                 ),
-                height: 100.0,
-                // width: 130.0,
-                fit: BoxFit.fill,
               ),
             ),
             Padding(

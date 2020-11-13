@@ -24,13 +24,13 @@ class Item{
 
   factory Item.fromJson(Map<String, dynamic> json){
     List<Image> _images = new List<Image>();
-    print(json['Images']);
+    // print(json['Images']);
     List<dynamic> rawImgs = json['Images'];
     if (rawImgs != null)
     rawImgs.forEach((image){
       _images.add(Image.fromJson(image));
     });
-    print('images: $_images');
+    // print('images: $_images');
 
     return Item(
       id: json['id'],
