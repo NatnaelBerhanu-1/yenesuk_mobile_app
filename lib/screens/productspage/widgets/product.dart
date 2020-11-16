@@ -8,11 +8,12 @@ import 'package:yenesuk/screens/productdetail/productdetailspage.dart';
 
 class ProductWidget extends StatelessWidget {
   final String image, name, id;
+  final DateTime createdAt;
   final double price;
 
   ProductWidget(
-      {@required this.id, @required this.image, @required this.name, @required this.price})
-      : assert(image != null && name != null && price != null && id != null);
+      {@required this.id, @required this.image, @required this.name, @required this.price, @required this.createdAt})
+      : assert(image != null && name != null && price != null && id != null && createdAt != null);
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +33,26 @@ class ProductWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(
-              child: ClipRRect(
-                // borderRadius: BorderRadius.only(
-                //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
+            Container(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                child: CachedNetworkImage(
-                  imageUrl: '$image',
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[300],
+                color: Colors.black,
+              ),
+              child: Center(
+                child: ClipRRect(
+                  // borderRadius: BorderRadius.only(
+                  //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: CachedNetworkImage(
+                    imageUrl: '$image',
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                      height: 100.0,
+                    ),
                     height: 100.0,
+                    // width: 130.0,
+                    fit: BoxFit.fill,
                   ),
-                  height: 100.0,
-                  // width: 130.0,
-                  fit: BoxFit.fill,
                 ),
               ),
             ),
@@ -59,6 +66,18 @@ class ProductWidget extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 16.0,
+                          fontWeight: FontWeight.w400),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    SizedBox(
+                      height: 2.0,
+                    ),
+                    Text(
+                      '${createdAt.day}/${createdAt.month}/${createdAt.year} ${createdAt.hour}:${createdAt.minute}',
+                      style: TextStyle(
+                          color: Colors.black26,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w400),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

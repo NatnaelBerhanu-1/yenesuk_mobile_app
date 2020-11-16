@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:yenesuk/screens/productimages/productimages.dart';
 
 class ProductCarousel extends StatefulWidget{
   final List<String> items;
@@ -39,23 +40,33 @@ class _ProductCarouselState extends State<ProductCarousel> {
               });
             },
           ),
-          items: widget.items.map((e) => Container(
-            margin: EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              //   border: Border.all(
-              //   width: 1.0,
-              //   color: Colors.black12
-              // )
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: CachedNetworkImage(
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
+          items: widget.items.map((e) => Hero(
+            tag: 'adPhoto${widget.items.indexOf(e)}',
+            child: GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductImages(images: widget.items, initialPage: widget.items.indexOf(e))));
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  //   border: Border.all(
+                  //   width: 1.0,
+                  //   color: Colors.black12
+                  // )
                 ),
-                imageUrl:'$e',
-                fit: BoxFit.contain,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                    ),
+                    imageUrl:'$e',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
           )).toList(),

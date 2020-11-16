@@ -79,6 +79,9 @@ class _SearchPageState extends State<SearchPage> {
                       // do searching here
                       print('here');
                       searchVal = searchVal.trim();
+                      setState(() {
+                        _page = 0;
+                      });
                       BlocProvider.of<SearchBloc>(context).add(
                           SearchTextChangedEvent(
                               searchText: searchVal, page: _page));

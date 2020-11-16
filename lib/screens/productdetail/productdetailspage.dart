@@ -14,7 +14,8 @@ import 'package:yenesuk/screens/productspage/widgets/tryagain.dart';
 class ProductDetailsPage extends StatefulWidget {
   final String id;
   ProductDetailsPage({@required this.id}):assert(id!=null);
-
+  var months = ["January", "February", "March","April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  var weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   @override
   _ProductDetailsPageState createState() => _ProductDetailsPageState();
 }
@@ -99,6 +100,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> with SingleTick
                         fontSize: 22.0,
                         fontWeight: FontWeight.bold),
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                  child: Text(
+                    '${widget.weekDays[item.createdAt.weekday]} ${widget.months[item.createdAt.month]} ${item.createdAt.day} ${item.createdAt.year} at ${item.createdAt.hour}:${item.createdAt.minute}',
+                    style: TextStyle(
+                        color: Colors.black26,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+                SizedBox(
+                  height: 2.0,
                 ),
                 Padding(
                   padding:

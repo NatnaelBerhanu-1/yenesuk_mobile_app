@@ -24,19 +24,25 @@ class SearchItem extends StatelessWidget{
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              // borderRadius: BorderRadius.only(
-              //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              child: CachedNetworkImage(
-                imageUrl: '${item.images[0].imageUrl}',
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                color: Colors.black
+              ),
+              child: ClipRRect(
+                // borderRadius: BorderRadius.only(
+                //     topLeft: Radius.circular(9.0), topRight: Radius.circular(9.0)),
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: CachedNetworkImage(
+                  imageUrl: '${item.images[0].imageUrl}',
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    height: 80.0,
+                  ),
                   height: 80.0,
+                  width: 120.0,
+                  fit: BoxFit.contain,
                 ),
-                height: 80.0,
-                width: 120.0,
-                fit: BoxFit.fill,
               ),
             ),
             Expanded(
@@ -52,6 +58,18 @@ class SearchItem extends StatelessWidget{
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 16.0,
+                          fontWeight: FontWeight.w400),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    SizedBox(
+                      height: 2.0,
+                    ),
+                    Text(
+                      '${item.createdAt.day}/${item.createdAt.month}/${item.createdAt.year} ${item.createdAt.hour}:${item.createdAt.minute}',
+                      style: TextStyle(
+                          color: Colors.black26,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w400),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

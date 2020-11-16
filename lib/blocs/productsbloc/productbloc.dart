@@ -13,9 +13,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   @override
   Stream<ProductState> mapEventToState(ProductEvent event) async* {
+    yield ProductFetchingState();
     GetItemsResponse data;
     try {
-      yield ProductFetchingState();
       if (event is GetProductsEvent) {
         data = await productRepository.getItems(event.page);
       } else if (event is SearchTextChangedEvent) {
@@ -27,6 +27,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       if (data.items.length == 0) {
         yield ProductEmptyState();
       } else {
+        print('yielding product fetched state');
         yield ProductFetchedState(data: data);
       }
     } catch (e) {

@@ -1,5 +1,3 @@
-import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,7 +7,6 @@ import 'package:yenesuk/blocs/initbloc/initstate.dart';
 import 'package:yenesuk/blocs/postproductbloc/postproductbloc.dart';
 import 'package:yenesuk/blocs/postproductbloc/postproductevent.dart';
 import 'package:yenesuk/blocs/postproductbloc/postproductstate.dart';
-import 'package:yenesuk/cloudinaryhelper.dart';
 import 'package:yenesuk/models/category.dart';
 import 'package:yenesuk/models/city.dart';
 import 'package:yenesuk/models/requests/createAdRequest.dart';
@@ -26,6 +23,9 @@ class _PostAdState extends State<PostAdPage> {
   CreateAdRequest _createAdRequest = new CreateAdRequest();
   Category _selectedCat;
   City _selectedCity;
+  var _nameController = TextEditingController();
+  var _desController = TextEditingController();
+  var _priceController =  TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,9 +44,10 @@ class _PostAdState extends State<PostAdPage> {
             // bottom: MediaQuery.of(context).viewInsets.bottom
           ),
           width: MediaQuery.of(context).size.width,
-          child: BlocBuilder<PostProductBloc, PostProductState>(
-            builder: (context, state) {
+          child: BlocConsumer<PostProductBloc, PostProductState>(
+            listener: (context, state){
               if (state is PostFailedState) {
+                print('state: post failed state');
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Can\'t post ad please try again'),
@@ -55,15 +56,23 @@ class _PostAdState extends State<PostAdPage> {
               }
               if (state is PostSuccessState) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  print('state: post success state');
                   setState(() {
+                    _selectedCity = null;
+                    _selectedCat = null;
                     _images = List<Asset>();
                     _createAdRequest = new CreateAdRequest();
                   });
+                  _nameController.clear();
+                  _priceController.clear();
+                  _desController.clear();
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Ad successfully posted'),
                   ));
                 });
               }
+            },
+            builder: (context, state) {
               return _buildPostForm(state);
             },
           ),
@@ -93,6 +102,7 @@ class _PostAdState extends State<PostAdPage> {
                     ),
                   ),
                   TextField(
+                    controller: _nameController,
                     onChanged: (value) {
                       setState(() {
                         _createAdRequest.name = value;
@@ -283,6 +293,7 @@ class _PostAdState extends State<PostAdPage> {
                         print(e);
                       }
                     },
+                    controller: _priceController,
                     maxLines: 1,
                     maxLength: 15,
                     keyboardType:
@@ -316,6 +327,7 @@ class _PostAdState extends State<PostAdPage> {
                   TextField(
                     maxLength: 1000,
                     maxLines: null,
+                    controller: _desController,
                     onChanged: (newVal) {
                       setState(() {
                         _createAdRequest.description = newVal;

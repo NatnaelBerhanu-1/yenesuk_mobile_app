@@ -56,10 +56,12 @@ class _ProductsPageState extends State<ProductsPage>
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     _productScrollController.addListener(() {
       if(_productScrollController.position.atEdge) {
         if(_productScrollController.position.pixels != 0){
           if(_page < _lastPage){
+            print('load more data');
             BlocProvider.of<ProductBloc>(context).add(GetProductsByCategoryEvent(page: _page+1, categoryId: widget.categoryId));
           }
         }
@@ -152,6 +154,14 @@ class _ProductsPageState extends State<ProductsPage>
           }),
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
+              buildWhen: (previousState, state){
+                print('build when');
+                if(state is ProductFetchedState && previousState is ProductFetchedState){
+                  if(previousState == state)
+                  return false;
+                }
+                return true;
+              },
               builder: (context, state) {
                 if (state is ProductFetchingState) {
                   if (_items.length == 0){
@@ -167,7 +177,9 @@ class _ProductsPageState extends State<ProductsPage>
                   _lastPage = state.data.lastPage;
                   if(state.data.page == 0){
                     _items = state.data.items;
-                  }else{
+                  }else if(_page < state.data.page){
+                    print('here');
+                    print('$_page ${state.data.page}');
                     _items.addAll(state.data.items);
                   }
                   _page = state.data.page;
@@ -267,6 +279,7 @@ class _ProductsPageState extends State<ProductsPage>
                 name: _items[index].name,
                 image: _items[index].images[0].imageUrl,
                 price: _items[index].price,
+                createdAt: _items[index].createdAt,
               );
             },
           staggeredTileBuilder: (int index) {
@@ -494,13 +507,14 @@ class _ProductsPageState extends State<ProductsPage>
     return GestureDetector(
         onTap: () {
           setState(() {
+            print('setting state');
             _page = 0;
             _lastPage = 0;
             _items = List<Item>();
             _activeCategory = category.id;
-            BlocProvider.of<ProductBloc>(context)
-                .add(GetProductsByCategoryEvent(categoryId: _activeCategory, page: 0));
           });
+          BlocProvider.of<ProductBloc>(context)
+              .add(GetProductsByCategoryEvent(categoryId: _activeCategory, page: 0));
         },
         child: _activeCategory == category.id
             ? Padding(

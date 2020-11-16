@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "503272899661",
+    "firebase_url": "https://abay-406fa.firebaseio.com",
+    "project_id": "abay-406fa",
+    "storage_bucket": "abay-406fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503272899661:android:e94eaeec76213b81fb0804",
+        "android_client_info": {
+          "package_name": "com.natnaelberhanu.abay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "503272899661-hje1cdmee1je0vh5f3i0bge089sn2dra.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.natnaelberhanu.abay",
+            "certificate_hash": "4b7633da225b14a59d85f49a8ea8835466e967cd"
+          }
+        },
+        {
+          "client_id": "503272899661-5fs5su5j0ltqno7ak3pguj8aqflqmmjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHzIJALDKc9035vRAmrnGb3N97vH3QwBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503272899661-5fs5su5j0ltqno7ak3pguj8aqflqmmjv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

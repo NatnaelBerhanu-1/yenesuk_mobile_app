@@ -5,7 +5,6 @@ import 'package:yenesuk/models/responses/getitemsresponse.dart';
 
 abstract class ProductState extends Equatable{
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -20,8 +19,7 @@ class ProductFetchedState extends ProductState{
   ProductFetchedState({@required this.data}):assert(data!=null);
 
   @override
-  // TODO: implement props
-  List<Object> get props => [data];
+  List<Object> get props => [data.page];
 }
 class ProductErrorState extends ProductState{}
 class ProductEmptyState extends ProductState{}
