@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:yenesuk/models/postadvalidation.dart';
 
-class PostProductState extends Equatable{
+abstract class PostProductState extends Equatable{
   @override
   // TODO: implement props
   List<Object> get props => [];

@@ -21,4 +21,14 @@ class User{
       profilePicture: json['profilePicture']
     );
   }
+
+  Map<String, dynamic> toJson(){
+    return {
+      'id':id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber': phoneNumber,
+      'profilePicture': profilePicture,
+    };
+  }
 }

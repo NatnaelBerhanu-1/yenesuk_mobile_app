@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yenesuk/blocs/authbloc/authbloc.dart';
 import 'package:yenesuk/blocs/initbloc/initbloc.dart';
 import 'package:yenesuk/blocs/initbloc/initstate.dart';
 import 'package:yenesuk/blocs/productsbloc/repo/productrepo.dart';
 import 'package:yenesuk/blocs/searchbloc/searchbloc.dart';
 import 'package:yenesuk/screens/homepage/widgets/category.dart';
 import 'package:yenesuk/screens/homepage/widgets/draweritemwidget.dart';
+import 'package:yenesuk/screens/loginpage/loginpage.dart';
 import 'package:yenesuk/screens/postad/postadpage.dart';
 import 'package:yenesuk/screens/searchpage/searchpage.dart';
 import 'package:yenesuk/widgets/featuredproduct.dart';
@@ -64,7 +66,10 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => BlocProvider(create: (context) => SearchBloc(productRepository: ProductRepository()), child: SearchPage())));
+                    builder: (context) => BlocProvider(
+                        create: (context) =>
+                            SearchBloc(productRepository: ProductRepository()),
+                        child: SearchPage())));
               },
               child: Container(
                 height: 64.0,
@@ -174,32 +179,40 @@ class _HomePageState extends State<HomePage> {
                         ),
                         itemBuilder: (context, index) {
                           if (index == state.initData.categories.length) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PostAdPage()));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                child: Center(
-                                    child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.add,
-                                        color: Colors.white, size: 40.0),
-                                    Text('Post ad',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold))
-                                  ],
-                                )),
-                              ),
-                            );
+                            return BlocBuilder<AuthenticationBloc, AuthState>(
+                                builder: (context, state) {
+                              if (state is Authenticated) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PostAdPage()));
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0))),
+                                    child: Center(
+                                        child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.add,
+                                            color: Colors.white, size: 40.0),
+                                        Text('Post ad',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold))
+                                      ],
+                                    )),
+                                  ),
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            });
                           }
                           return Category(
                               title: '${state.initData.categories[index].name}',
@@ -212,24 +225,33 @@ class _HomePageState extends State<HomePage> {
                 }),
               ),
             ),
-            // Container(
-            //   margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-            //   height: 50.0,
-            //   width: MediaQuery.of(context).size.width,
-            //   decoration: BoxDecoration(
-            //       color: Theme.of(context).primaryColor,
-            //       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-            //   child: FlatButton(
-            //     onPressed: () {
-            //
-            //     },
-            //     child: Text(
-            //       'post ad',
-            //       style: TextStyle(
-            //           color: Colors.white, fontWeight: FontWeight.bold),
-            //     ),
-            //   ),
-            // )
+            BlocBuilder<AuthenticationBloc, AuthState>(
+                builder: (context, state) {
+              if (state is Unauthenticated) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                        },
+                        child: Text('Login here ',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0)),
+                      ),
+                      Text('to post your ads.',
+                          style:
+                              TextStyle(color: Colors.black, fontSize: 16.0)),
+                    ],
+                  ),
+                );
+              }
+              return SizedBox();
+            })
           ]),
         ),
       ),

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:yenesuk/models/requests/createAdRequest.dart';
 
-class PostProductEvent extends Equatable{
+abstract class PostProductEvent extends Equatable{
   @override
   List<Object> get props => [];
 }

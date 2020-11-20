@@ -62,11 +62,12 @@ class _ProductsPageState extends State<ProductsPage>
         if(_productScrollController.position.pixels != 0){
           if(_page < _lastPage){
             print('load more data');
-            BlocProvider.of<ProductBloc>(context).add(GetProductsByCategoryEvent(page: _page+1, categoryId: widget.categoryId));
+            BlocProvider.of<ProductBloc>(context).add(GetProductsByCategoryEvent(page: _page+1, categoryId: _activeCategory));
           }
         }
       }
     });
+
     return Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.max,

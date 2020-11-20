@@ -7,5 +7,6 @@ class CreateAdRequest{
   String cityId;
   String condition;
   double price;
+  String userId;
   List<Asset> images;
 }

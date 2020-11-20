@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:yenesuk/blocs/productsbloc/service/productservice.dart';
 import 'package:yenesuk/models/Item.dart';
+import 'package:yenesuk/models/requests/createAdRequest.dart';
 import 'package:yenesuk/models/responses/getitemsresponse.dart';
 
 class ProductRepository {
@@ -19,5 +22,9 @@ class ProductRepository {
 
   Future<GetItemsResponse> getItemsByCategory(String categoryId, int page) async {
     return await _productService.getItemsByCategory(categoryId, page);
+  }
+
+  Future<Void> postAd({CreateAdRequest adRequest}) async {
+    await _productService.postAd(adRequest: adRequest);
   }
 }
